@@ -1,11 +1,11 @@
 // src/ProductDashboard.js
 import React, { useState, useEffect } from 'react';
-import ProductList from './components/ProductList.jsx';
+import ProductList from './components/ProductList';
 import SearchBar from './components/SearchBar';
 import Filters from './components/Filters';
 import Pagination from './components/Pagination';
 import ProductDetails from './components/ProductDetails';
-import fetchProducts from './api/Products.js';
+import fetchProducts  from './api/Products';
 
 const ProductDashboard = () => {
     const [products, setProducts] = useState([]);
@@ -21,8 +21,12 @@ const ProductDashboard = () => {
         const loadProducts = async () => {
             try {
                 const data = await fetchProducts();
-                setProducts(data);
-                setFilteredProducts(data);
+
+                // Sort products by title in ascending order
+                const sortedProducts = data.sort((a, b) => a.title.localeCompare(b.title));
+
+                setProducts(sortedProducts);
+                setFilteredProducts(sortedProducts);
             } catch (err) {
                 setError(err.message);
             }
@@ -54,6 +58,9 @@ const ProductDashboard = () => {
             );
         }
 
+        // Sort filtered products by title in ascending order
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
+
         setFilteredProducts(filtered);
     }, [searchQuery, priceFilter, popularityFilter, products]);
 
@@ -66,20 +73,20 @@ const ProductDashboard = () => {
 
     return (
         <div>
-        <div className='dashboard'>
-            <h1>Product Dashboard</h1>
-            <div className='header'>
-                <div className='searchbar'>
-                    <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-                    <Filters
-                        priceFilter={priceFilter}
-                        setPriceFilter={setPriceFilter}
-                        popularityFilter={popularityFilter}
-                        setPopularityFilter={setPopularityFilter}
-                    />
+            <div className='dashboard'>
+                <h1>Product Dashboard</h1>
+                <div className='header'>
+                    <div className='searchbar'>
+                        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                        <Filters
+                            priceFilter={priceFilter}
+                            setPriceFilter={setPriceFilter}
+                            popularityFilter={popularityFilter}
+                            setPopularityFilter={setPopularityFilter}
+                        />
+                    </div>
                 </div>
             </div>
-</div>
             <ProductList products={displayedProducts} onProductClick={setSelectedProduct} />
             {error && <p className="error">{error}</p>}
             <Pagination
@@ -87,7 +94,6 @@ const ProductDashboard = () => {
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
             />
-
             {selectedProduct && (
                 <ProductDetails product={selectedProduct} onClose={() => setSelectedProduct(null)} />
             )}
