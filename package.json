@@ -35,11 +35,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ],
-    "proxy": "https://cdn.drcode.ai"
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^6.5.0",
-    "@testing-library/react": "^16.0.1",
-    "jest": "^27.5.1"
-  }
+  
 }
